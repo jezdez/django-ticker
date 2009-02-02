@@ -1,0 +1,20 @@
+{% load i18n %}
+{% block title %}{% trans "News" %}{% endblock %}
+
+{% block content %}{% endblock %}
+
+{% block content-related %}
+    <h2>{% trans "Popular tags" %}</h2>
+    
+    <ul class="chartlist">
+      {% for tag in popular_tags|slice:":10" %}
+      <li>
+        <a href="{% url ticker_archive_details tag.name|urlencode %}">{{ tag.name }}</a>
+        <span class="count" title="{% trans "number of related entries" %}">{{ tag.count }}</span>
+        <span class="index" style="width: {% widthratio tag.count popular_tags_max 100 %}%">
+          ({% widthratio tag.count popular_tags_max 100 %}%)
+        </span>
+      </li>
+      {% endfor %}
+    </ul>
+{% endblock %}

@@ -1,0 +1,17 @@
+{% extends "ticker_base.html" %}
+{% load i18n %}
+{% load pagination_tags %}
+
+{% block title %}{% trans "News" %}{% endblock %}
+
+{% block content %}
+<h1>{% trans "Tag archive" %}</h1>
+
+<div class="content first-content">
+    <p class="tagsizelist" style="line-height: 2.4em;">
+    {% for tag in tag_list %}
+        <a href="{% url ticker_archive_details tag.name|urlencode %}" class="tag tagsize{{ tag.font_size }}">{{ tag.name }}</a>
+    {% endfor %}
+    </p>
+</div>
+{% endblock %}

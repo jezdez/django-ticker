@@ -1,0 +1,29 @@
+{% extends "ticker_base.html" %}
+{% load i18n %}
+{% load pagination_tags %}
+
+{% block content %}
+<h1>{% trans "News" %}</h1>
+<div class="content first-content">
+    {% autopaginate entry_list per_page %}
+    {% for entry in entry_list %}
+        {% include "ticker/entry.html" %}
+        {% if not forloop.last %}
+        <div class="newsentry-spacer"></div>
+        {% endif %}
+    {% endfor %}
+</div>
+{% paginate %}
+{% endblock %}
+
+{% block content-related %}
+
+    <p style="margin-top: 10px;">
+        {% url ticker_archive as ticker_archive_url %}
+        {% blocktrans %}
+        An overview of all tags can be found in the 
+        <a href="{{ ticker_archive_url }}">archive</a>.
+        {% endblocktrans %}
+    </p>
+    {{ super.block }}
+{% endblock %}

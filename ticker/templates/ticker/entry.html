@@ -1,0 +1,23 @@
+{% load i18n %}
+{% load ticker_tags %}
+
+<div class="section" id="{{ item.guid|escape }}">
+    <div class="newsentry-content">
+        <h3>{{ entry.title }}</h3>
+        <p class="subheadline">
+            {% blocktrans with entry.get_author as author and entry.published|date:"d. F Y H:i" as date_published %}
+            Written by <strong>{{ author }}</strong>
+            at {{ date_published }}
+            {% endblocktrans %}
+        </p>
+        <div class="summary">{{ entry.content_processed|safe }}</div>
+        {% if entry.source_url %}
+        <p class="source">
+            {% trans "Source" %}: <a href="{{ entry.source_url }}">{{ entry.source_url|truncurl:"50" }}</a>
+        </p>
+        {% endif %}
+        {% if not is_detail %}
+        <p class="more">{% trans "Read more" %}: <a href="{{ entry.get_absolute_url }}">{{ entry.title }} &rarr;</a></p>
+        {% endif %}
+    </div>
+</div>

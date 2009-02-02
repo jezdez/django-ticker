@@ -1,0 +1,27 @@
+{% extends "ticker_base.html" %}
+{% load pagination_tags %}
+
+{% block content %}
+<h1>{% trans "Entries tagged with &quot;{{ the_tag }}&quot;" %}</h1>
+<div class="content first-content">
+    {% autopaginate entry_list %}
+    {% for entry in entry_list %}
+        {% include "ticker/entry.html" %}
+        {% if not forloop.last %}
+        <div class="newsentry-spacer"></div>
+        {% endif %}
+    {% endfor %}    
+</div>
+{% endblock %}
+
+{% block content-related %}
+    {% if related_tags %}
+    <h2>{% trans "Related tags" %}</h2>
+    <p class="taglistsize" style="line-height: 2em;">
+    {% for tag in related_tags %}
+        <a href="{% url ticker_archive_details tag.name|urlencode %}" class="tag">{{ tag.name }}</a>
+    {% endfor %}
+    </p>
+    {% endif %}
+    {{ super.block }}
+{% endblock %}

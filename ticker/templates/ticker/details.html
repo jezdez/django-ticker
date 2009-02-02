@@ -1,0 +1,90 @@
+{% extends "ticker_base.html" %}
+{% load i18n %}
+{% load pagination_tags %}
+{% load threadedcommentstags %}
+
+{% block title %}{% blocktrans with entry.title as entry_title %}
+    News: {{ entry_title }}
+{% endblocktrans %}{% endblock %}
+{% block billboard %}
+    <h2>
+        <a href="{% url ticker_overview %}">{% trans "News" %}</a>
+    </h2>
+{% endblock %}
+
+{% block content %}
+<h1>{{ entry.title }}</h1>
+<div class="content first-content">
+    {% include "ticker/entry.html" %}
+    
+    <div class="newsentry-content">
+        
+        {% get_free_threaded_comment_tree for entry as comment_tree %}
+        {% if comment_tree %}
+        <h3>{% trans "Comments" %}</h3>
+        <ol class="comments">
+        {% for comment in comment_tree %}
+            <li id="c{{ comment.id }}" style="margin-left: {{ comment.depth }}em;">
+                <p class="title">
+                    <a class="jump" href="#c{{ comment.id }}">#{{ forloop.counter }}</a> ~
+                    <span class="author">{% trans "By " %}<a href="{{ comment.website }}">{{ comment.name }}</a></span>
+                    ~ {{ comment.date_submitted|timesince }}
+                </p>
+                {% auto_transform_markup comment %}
+            </li>
+        {% endfor %}
+        </ol>
+        {% endif %}
+        
+        <h3>{% trans "Add comment" %}</h3>
+        <fieldset class="shinyform">
+        <form method="POST" action="{% get_free_comment_url entry %}">
+            <ol>
+                {{ comment_form.as_ul }}
+                <li><input type="submit" value="{% trans "Submit comment" %}" /></li>
+            </ol>
+        </form>
+        </fieldset>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block content-related %}
+
+    <p>
+    <span class="prevnext">
+        {% if entry.get_prev %}
+        &larr; <a href="{{ entry.get_prev.get_absolute_url }}" title="{% blocktrans with entry.get_prev.title as previous_entry_title %}Previous entry: {{ previous_entry_title }}{% endblocktrans %}">
+            {% trans "Previous" %}
+        </a>
+        {% endif %}
+        {% if entry.get_prev and entry.get_next %}&nbsp;~&nbsp;{% endif %}
+        {% if entry.get_next %}
+        <a href="{{ entry.get_next.get_absolute_url }}" title="{% blocktrans with entry.get_next.title as previous_entry_title %}Next entry: {{ previous_entry_title }}{% endblocktrans %}">
+            {% trans "Next" %}
+        </a> &rarr;
+        {% endif %}
+    </span>
+    </p>
+
+    {% if entry.get_tags %}
+    <h2 class="first">{% trans "Tags for this entry" %}</h2>
+    <p class="tagsizelist" style="line-height: 2em;">
+    {% for tag in entry.get_tags %}
+        <a href="{% url ticker_archive_details tag.name|urlencode %}" class="tag">{{ tag.name }}</a>
+    {% endfor %}
+    </p>
+    {% endif %}
+
+    {% if entry.get_related %}
+    <h2>{% trans "Related tags" %}</h2>
+    <ul class="linklist">
+    {% for rel in entry.get_related|slice:":5" %}
+        <li><a href="{{ rel.get_absolute_url }}">{{ rel.title }}</a></li>
+    {% endfor %}
+    </ul>
+    {% endif %}
+
+    {{ super.block }}
+{% endblock %}
