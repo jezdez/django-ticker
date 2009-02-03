@@ -10,7 +10,7 @@
             at {{ date_published }}
             {% endblocktrans %}
         </p>
-        <div class="summary">{{ entry.content_processed|safe }}</div>
+        <div class="more">{{ entry.content_more|safe }}</div>
         {% if entry.source_url %}
         <p class="source">
             {% trans "Source" %}: <a href="{{ entry.source_url }}">{{ entry.source_url|truncurl:"50" }}</a>

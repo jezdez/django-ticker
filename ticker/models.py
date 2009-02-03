@@ -9,8 +9,6 @@ from tagging.models import Tag, TaggedItem
 from tagging.fields import TagField
 from django_extensions.db.fields import AutoSlugField
 
-from ticker import textutils
-
 class EntryManager(models.Manager):
     def public(self):
         return self.filter(status=Entry.STATUS_OPEN)
@@ -30,10 +28,10 @@ class Entry(models.Model):
 
     # Title and Slug
     title = models.CharField(_('title'), max_length=255)
-    slug = AutoSlugField(_('slug'), populate_from='title', max_length=255, blank=True)
+    slug = AutoSlugField(_('slug'), populate_from='title', max_length=255)
 
     content = models.TextField(_('content'))
-    content_processed = models.TextField(_('content (parsed)'), blank=True)
+    content_more = models.TextField(_('more content'), blank=True)
     source_url = models.URLField(_('source URL'),blank=True)
 
     # Date Fields
@@ -87,7 +85,6 @@ class Entry(models.Model):
         if not self.id:
             self.published = datetime.datetime.now()
         self.modified = datetime.datetime.now()
-        self.content_processed = textutils.textfilter(self.content)
         super(Entry, self).save(force_insert, force_update)
 
     def get_absolute_url(self):
