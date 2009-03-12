@@ -12,7 +12,7 @@ class LatestEntries(feeds.Feed):
         return Entry.objects.public()[:30]
 
     def item_pubdate(self, item):
-        return item.published
+        return item.created
 
     def item_author_name(self, item):
         return item.get_author()
