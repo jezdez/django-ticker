@@ -5,9 +5,9 @@
     <div class="newsentry-content">
         <h3>{{ entry.title }}</h3>
         <p class="subheadline">
-            {% blocktrans with entry.get_author as author and entry.published|date:"d. F Y H:i" as date_published %}
+            {% blocktrans with entry.get_author as author and entry.created|date:"d. F Y H:i" as date_created %}
             Written by <strong>{{ author }}</strong>
-            at {{ date_published }}
+            at {{ date_created }}
             {% endblocktrans %}
         </p>
         <div class="more">{{ entry.content_more|safe }}</div>
