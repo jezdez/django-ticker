@@ -9,7 +9,13 @@ setup(
     maintainer='Jannis Leidel',
     maintainer_email='jannis@leidel.info',
     url='http://github.com/jezdez/django-ticker/tree/master',
-    packages=find_packages(),
+    packages=find_packages(exclude=['tickerproject', 'tickerproject.*']),
+    package_data = {
+        'ticker': [
+            'media/ticker/*/*',
+            'templates/ticker/*.html'
+        ],
+    },
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Web Environment',
@@ -19,11 +25,5 @@ setup(
         'Programming Language :: Python',
         'Framework :: Django',
     ],
-    # Make setuptools include all data files under version control,
-    # svn and CVS by default
-    include_package_data=True,
     zip_safe=False,
-    # Tells setuptools to download setuptools_git before running setup.py so
-    # it can find the data files under Git version control.
-    setup_requires=['setuptools_git'],
 )
