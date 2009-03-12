@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='django-ajax-validation',
+    name='django-ticker',
     version='0.1.0',
     description='A simple Django app for newsticker with a row level permission based workflow.',
     author='Martin Mahner',
