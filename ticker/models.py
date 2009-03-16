@@ -7,7 +7,8 @@ from django.utils.translation import ugettext as _
 
 from tagging.models import Tag, TaggedItem
 from tagging.fields import TagField
-from django_extensions.db.fields import AutoSlugField, TimeStampedModel
+from django_extensions.db.fields import AutoSlugField
+from django_extensions.db.models import TimeStampedModel
 
 class EntryManager(models.Manager):
     def public(self):
