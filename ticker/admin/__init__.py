@@ -97,18 +97,3 @@ class EntryAdmin(admin.ModelAdmin):
         return instance
 
 admin.site.register(Entry, EntryAdmin)
-
-from django.contrib.auth.models import User
-admin.site.unregister(User)
-
-from django_extensions.admin import AutocompleteAdmin
-
-class UserAutocompleteAdmin(AutocompleteAdmin):
-    related_search_fields = {
-       'groups': ('name',),
-       'user_permissions': ('name', 'codename'),
-    }
-    related_string_functions = {
-        'permission': lambda x: x.name,
-    }
-admin.site.register(User, UserAutocompleteAdmin)
