@@ -13,18 +13,17 @@ from ticker.admin.widgets import ForeignKeyAsTextWidget, \
                                                 TaggingAutocompleteWidget
 
 class EntryAdmin(admin.ModelAdmin):
-
     list_display = (
         'title',
         'status',
         'author',
     )
-
     fields = (
         'author',
         'status',
         'title',
         'content',
+        'content_more',
         'source_url',
         'tags',
         'enable_comments',
