@@ -6,7 +6,6 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     (r'^admin/(.*)', admin.site.root),
-    (r'^comments/', include('threadedcomments.urls')),
     (r'', include('ticker.urls')),
 )
 
