@@ -18,6 +18,7 @@ class EntryAdmin(admin.ModelAdmin):
         'status',
         'author',
     )
+    
     fields = (
         'author',
         'status',
@@ -31,7 +32,8 @@ class EntryAdmin(admin.ModelAdmin):
 
     def queryset(self, request):
         """
-        Zeige nur Einträge des Users oder wenn er die Rechte besitzt, alle.
+        Shows only entries which author is the current user.
+        Show all entries if the user has the permission `can_change_foreign`.
         """
         if request.user.has_perm('ticker.can_change_foreign'):
             return self.model._default_manager.get_query_set()
@@ -42,7 +44,7 @@ class EntryAdmin(admin.ModelAdmin):
 
         # Autorenfeld hat als Vorauswahl den aktuellen User
         if db_field.name == "author":
-            field.widget = ForeignKeyAsTextWidget(append_text="Dein Benutzername wird automatisch gespeichert")
+            field.widget = ForeignKeyAsTextWidget(append_text=_("Your username get's automatically saved"))
             field.initial = self._request.user.pk
             return field
 
@@ -76,12 +78,10 @@ class EntryAdmin(admin.ModelAdmin):
         if isinstance(db_field, models.TextField):
             field.widget.attrs['style'] = 'height:20em;'
             return field
-
         return field
 
-    # ``formfield_for_dbfield`` hat keine Zugriff auf das Request-Objekt.
-    # Darum wird es hier global in die Klasse gesetzt. Sehr häßlich. Dann
-    # vielleicht doch mal Threadlocals...
+    # ``formfield_for_dbfield`` has no access to the request, therefore we
+    # put the request here into the global class.
     def change_view(self, request, object_id, *args, **kwargs):
         self._request = request
         self._obj = Entry.objects.get(pk=object_id)
@@ -91,6 +91,15 @@ class EntryAdmin(admin.ModelAdmin):
         self._request = request
         return super(EntryAdmin, self).add_view(request,  *args, **kwargs)
 
+    def has_change_permission(self, request, obj=None):
+        if not super(EntryAdmin, self).has_change_permission(request, obj):
+            return False
+        
+        if obj is not None and not request.user.has_perm('ticker.can_change_foreign') \
+           and request.user.pk != obj.author.pk:
+            return False
+        return True
+    
     def save_form(self, request, form, change):
         instance = form.save(commit=False)
         return instance
