@@ -44,19 +44,11 @@ class EntryAdmin(admin.ModelAdmin):
 
         # Autorenfeld hat als Vorauswahl den aktuellen User
         if db_field.name == "author":
-            field.widget = ForeignKeyAsTextWidget(append_text=_("Your username get's automatically saved"))
+            field.widget = ForeignKeyAsTextWidget(append_text=_(self._obj.author.username))
             field.initial = self._request.user.pk
             return field
 
-        # JQuery Autocomplete für Tags
-        if db_field.name == "tags":
-            field.widget = TaggingAutocompleteWidget(
-                taglist=([tag.name for tag in Tag.objects.all()]))
-            return field
-
         if db_field.name == "status":
-            # #FIXME# Das hier geht schöner
-
             # Wenn der User kein "can_publish" recht hat, soll ihm als Auswahl
             # nur "Closed" und "Draft" angezeigt werden.
             if not self._request.user.has_perm('ticker.can_publish'):
@@ -70,13 +62,7 @@ class EntryAdmin(admin.ModelAdmin):
             if hasattr(self, '_obj') and self._obj.status == Entry.STATUS_OPEN:
                 user_choices = Entry.STATUS_CHOICES
 
-            field = forms.ChoiceField(choices=user_choices) # Bugfix: #6967
-            #field.widget = forms.RadioSelect(choices=user_choices)
-            return field
-
-        # Textarea Felder einwenig größer
-        if isinstance(db_field, models.TextField):
-            field.widget.attrs['style'] = 'height:20em;'
+            field = forms.ChoiceField(choices=user_choices)
             return field
         return field
 
@@ -99,9 +85,5 @@ class EntryAdmin(admin.ModelAdmin):
            and request.user.pk != obj.author.pk:
             return False
         return True
-    
-    def save_form(self, request, form, change):
-        instance = form.save(commit=False)
-        return instance
 
 admin.site.register(Entry, EntryAdmin)
