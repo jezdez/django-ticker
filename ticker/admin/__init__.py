@@ -9,8 +9,7 @@ from django.utils.translation import ugettext as _
 
 from tagging.models import Tag
 from ticker.models import Entry
-from ticker.admin.widgets import ForeignKeyAsTextWidget, \
-                                                TaggingAutocompleteWidget
+from ticker.admin.widgets import ForeignKeyAsTextWidget
 
 class EntryAdmin(admin.ModelAdmin):
     list_display = (
@@ -25,7 +24,6 @@ class EntryAdmin(admin.ModelAdmin):
         'title',
         'content',
         'content_more',
-        'source_url',
         'tags',
         'enable_comments',
     )
@@ -42,9 +40,11 @@ class EntryAdmin(admin.ModelAdmin):
     def formfield_for_dbfield(self, db_field, **kwargs):
         field = super(EntryAdmin, self).formfield_for_dbfield(db_field, **kwargs)
 
-        # Autorenfeld hat als Vorauswahl den aktuellen User
+        # Autoren die fremde Artikel nicht bearbeiten duerfen,
+        # sehen kein Dropdown Feld
         if db_field.name == "author":
-            field.widget = ForeignKeyAsTextWidget(append_text=_(self._obj.author.username))
+            if not self._request.user.has_perm('ticker.can_change_foreign'):
+                field.widget = ForeignKeyAsTextWidget(append_text=_('Your username gets saved automatically'))
             field.initial = self._request.user.pk
             return field
 
