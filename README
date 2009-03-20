@@ -12,14 +12,14 @@ permissions -- add, change, delete -- there are some extra permissions:
 - change_foreign
 - publish
 
-Originally this was created for a news section for the `german Django community`_ 
+Originally this was created for the news section of the `German Django community`_ 
 where foreign users could add articles but had no permission to publish
 them, cause a moderator must check these articles first. 
 
 It's easy to create a pressroom like workflow, assumed we have different
 people with different permissions:
 
-The Freelance Journalist:
+The freelance journalist:
     Granted permissions: add, change
     
     - can add articles
@@ -27,35 +27,35 @@ The Freelance Journalist:
     - can not delete his articles
     - can set the status of the article to "closed" or "draft". Draft means,
       that the article is ready for check by a moderator.
-    - in the admin list of articles, he sees only his own
+    - in the admin list of articles, they see only they own
 
-The Journalist:
+The journalist:
     Granted permissions: add, change, delete, publish
     
     - can add articles
     - can change and delete his articles (only his own)
     - can set the status of the article to "closed", "draft" or "published"
-    - in the admin list of articles, he sees only his own
+    - in the admin list of articles, they see only their own
 
-The Chief Editor (or moderator):
+The chief editor (or moderator):
     Granted permissions: add, change, delete, publish, change_foreign
     
     - can add articles
     - can change and delete all (!) articles
     - can set the status of the article to "closed", "draft" or "published"
-    - in the admin list of articles, he sees all articles
+    - in the admin list of articles, they see all articles
     
-The corrector (or lector):
+The proofreader (or subject specialist):
     Granted permissions: change, change_foreign
     
-    - Can not add articles
-    - Can not delete articles
-    - Can not publish articles
-    - Can change all articles (e.g. for corrections)
-    - in the admin list of articles, he sees all articles
+    - can not add articles
+    - can not delete articles
+    - can not publish articles
+    - can change all articles (e.g. for correction)
+    - in the admin list of articles, they see all articles
     
 So, you can mix these permissions and create a workflow that perfectly 
 fits your needs.
 
 .. _`Django`: http://www.djangoproject.com/
-.. _`german Django Community`: http://django-de.org/
+.. _`German Django Community`: http://django-de.org/
