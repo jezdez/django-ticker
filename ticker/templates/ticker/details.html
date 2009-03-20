@@ -36,6 +36,24 @@
             </ul>
             <p><a href="{% url ticker_archive %}">{% trans "See the archive for all the latest entries" %}</a>
         </div>
+        {% endif %}        
+                
+        {% if entry.resources.all %}
+        <div class="box">
+            <p><strong>{% trans "Resources" %}:</strong></p>
+            <ul>
+            {% for r in entry.resources.all %}
+            <li>
+                {% if r.url %}<a href="{{ r.url }}">{{ r.title }}</a>{% endif %}
+                {% if r.description %}{{ r.description|linebreaks }}{% endif %}
+                <p><small style="color: #888">This is a resource of type
+                    <q>{{ r.type.slug }}</q>. Normally you would filter
+                    these resource types and, for instance, display only <q>link<q>
+                    types here.</small></p>
+            </li>
+            {% endfor %}
+            </ul>
+        </div>
         {% endif %}
         
         <p><a href="#comments" onclick="

@@ -26,7 +26,7 @@ def archive(request, template_name='ticker/archive.html', extra_context={}):
     return render_to_response(template_name, template_context, 
                               RequestContext(request))
 
-def archive_by_tag(request, tag, template_name='ticker/archive_for_tag.html', extra_context={}):
+def archive_by_tag(request, tag, template_name='ticker/archive_by_tag.html', extra_context={}):
     """Shows a list of entries related with a specific `tag`"""
     get_object_or_404(Tag, name=tag)
     entry_list = TaggedItem.objects.get_by_model(Entry.objects.public(), [tag])

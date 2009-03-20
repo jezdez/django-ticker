@@ -73,3 +73,25 @@ class Entry(TimeStampedModel):
     def get_absolute_url(self):
         return ('ticker_details', (), dict(slug=self.slug))
     get_absolute_url = permalink(get_absolute_url)
+
+class EntryResourceType(models.Model):
+    title = models.CharField(_('title'), max_length=255)
+    slug = AutoSlugField(_('slug'), populate_from='title', max_length=255)
+    description = models.TextField(_('description'), blank=True)
+    
+    def __unicode__(self):
+        return self.title
+
+class EntryResource(models.Model):
+    entry = models.ForeignKey(Entry, verbose_name=_('entry'), related_name='resources')
+    type = models.ForeignKey(EntryResourceType, verbose_name=_('resource type'))
+    title = models.CharField(_('title'), max_length=255, blank=True)
+    description = models.TextField(_('description'), blank=True)
+    url = models.URLField(_('URL'), blank=True, verify_exists=False)
+
+    class Meta:
+        verbose_name = _('resource')
+        verbose_name_plural = _('resources')
+
+    def __unicode__(self):
+        return self.title
