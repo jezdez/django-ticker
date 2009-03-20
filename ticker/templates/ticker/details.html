@@ -1,0 +1,73 @@
+{% extends "ticker/base.html" %}
+
+{% load i18n %}
+{% load comments %}
+
+{% block title %}
+    {{ entry.title }}
+{% endblock %}
+
+{% block content %}
+    <div class="entry">
+        <h2>{{ entry.title }}</h2>
+       <div class="{% if entry.content_more %}teaser{% endif %}">
+           {{ entry.content|urlize|linebreaks }}
+        </div>
+        {{ entry.content_more|urlize|linebreaks }}
+        
+        {% if entry.get_tags %}
+        <div class="box">
+            <p>
+                <strong>{% trans "Categories" %}:</strong>
+                {% for tag in entry.get_tags %}
+                    <a href="{% url ticker_archive_for_tag tag.name %}">{{ tag.name }}</a>
+                {% endfor %}
+            </p>
+        </div>
+        {% endif %}
+        
+        {% if entry.get_related %}
+        <div class="box">
+            <p><strong>{% trans "Related entries" %}:</strong></p>
+            <ul>
+                {% for entry in entry.get_related %}
+                <li><a href="{% url ticker_details entry.slug %}">{{ entry.title|truncatewords:5 }}</a></li>
+                {% endfor %}
+            </ul>
+            <p><a href="{% url ticker_archive %}">{% trans "See the archive for all the latest entries" %}</a>
+        </div>
+        {% endif %}
+        
+        <p><a href="#comments" onclick="
+            document.getElementById('comments').style.display='block'; 
+            this.style.display='none'; 
+            return false;
+            ">Show comments</a></p>
+    </div>
+    
+    <!--
+        Django Contrib Comments
+    -->
+    
+    <div class="comments" id="comments" style="display:none;">
+        
+        {% get_comment_list for entry as comment_list %}
+        
+        {% if comment_list %}
+        <h3>{% trans "Comments for this entry" %}</h3>
+        
+            {% for comment in comment_list %}
+            <h4>
+                {% blocktrans with comment.user as user and comment.submit_date|date:_("DATE_FORMAT") as date %}{{ user }} at {{ date }}:{% endblocktrans %}
+            </h4>
+            <div class="body">
+                {{ comment.comment|linebreaks }}
+            </div>
+            {% endfor %}
+            
+        {% endif %}
+
+        <h3>{% trans "Add a comment" %}</h3>
+        {% render_comment_form for entry %}
+    </div>
+{% endblock %}

@@ -14,8 +14,8 @@ urlpatterns = patterns('',
     # Archive site
     url(r'^archive/$', archive, name='ticker_archive'),
     
-    # Archive for tags
-    url(r'^archive/(?P<tag>[\w\s_\-\.% ]+)/$', archive_by_tag, name='ticker_archive_details'),
+    # Archive for a specific tag
+    url(r'^archive/(?P<tag>[\w\s_\-\.% ]+)/$', archive_by_tag, name='ticker_archive_for_tag'),
 
     # Detail page
     url(r'^(?P<slug>[-\w]+)/$', details, name='ticker_details'),

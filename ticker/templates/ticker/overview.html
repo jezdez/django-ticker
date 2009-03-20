@@ -1,0 +1,24 @@
+{% extends "ticker/base.html" %}
+
+{% block content %}
+    {% for entry in entry_list %}
+    <div class="entry">
+        <h2>{{ entry.title }}</h2>
+        {{ entry.content|urlize|linebreaks }}
+        <p class="more">
+            <a href="{{ entry.get_absolute_url }}">
+            {% if entry.content_more %}
+                Read more... ({{ entry.content_more|wordcount }} words)
+            {% else %}
+                See comments
+            {% endif %}
+            </a>
+        </p>
+    </div>
+    {% endfor %}
+    
+    <p>Follow entries by 
+        <a href="{% url ticker_feeds url="rss" %}">RSS</a>
+        <a href="{% url ticker_feeds url="atom" %}">Atom</a>
+    </p>
+{% endblock %}

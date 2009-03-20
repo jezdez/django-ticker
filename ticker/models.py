@@ -9,12 +9,9 @@ from django_extensions.db.fields import AutoSlugField
 from django_extensions.db.models import TimeStampedModel
 
 class EntryManager(models.Manager):
-    def published(self):
+    def public(self):
         """Returns published entries only"""
         return self.filter(status=Entry.STATUS_OPEN)
-    def public(self):
-        """This is for backwards compatibility, use .published() instead"""
-        return self.published()
     
 class Entry(TimeStampedModel):
 

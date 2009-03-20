@@ -1,5 +1,4 @@
 from django.template.defaultfilters import dictsortreversed
-
 from tagging.models import Tag
 from ticker.models import Entry
 

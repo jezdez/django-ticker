@@ -1,0 +1,15 @@
+{% extends "ticker/base.html" %}
+
+{% load i18n %}
+
+{% block content %}
+    <h2>{% blocktrans %}Archive for <q>{{ the_tag  }}</q>{% endblocktrans %}</h2>
+    <ul>
+    {% for entry in entry_list %}
+    <li>
+        {{ entry.created|date:_("DATE_FORMAT") }}:
+        <a href="{{ entry.get_absolute_url }}">{{ entry.title }}</a>
+    </li>
+    {% endfor %}
+    </ul>
+{% endblock %}

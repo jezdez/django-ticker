@@ -6,7 +6,7 @@ admin.autodiscover()
 
 urlpatterns = patterns('',
     (r'^admin/(.*)', admin.site.root),
-    (r'', include('ticker.urls')),
+    (r'^comments/', include('django.contrib.comments.urls')),
 )
 
 if settings.DEBUG:
@@ -15,3 +15,9 @@ if settings.DEBUG:
             'document_root': settings.MEDIA_ROOT
         })
     )
+
+# Include the ticker urls at last, so they will fetch article-slugs
+# on root level
+urlpatterns += patterns('',
+    (r'', include('ticker.urls')),
+)
