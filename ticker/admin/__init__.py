@@ -9,8 +9,7 @@ from django.utils.translation import ugettext as _
 
 from tagging.models import Tag
 from ticker.models import Entry
-from ticker.admin.widgets import ForeignKeyAsTextWidget, \
-                                                TaggingAutocompleteWidget
+from ticker.admin.widgets import ForeignKeyAsTextWidget
 
 class EntryAdmin(admin.ModelAdmin):
     list_display = (
@@ -18,20 +17,21 @@ class EntryAdmin(admin.ModelAdmin):
         'status',
         'author',
     )
+    
     fields = (
         'author',
         'status',
         'title',
         'content',
         'content_more',
-        'source_url',
         'tags',
         'enable_comments',
     )
 
     def queryset(self, request):
         """
-        Zeige nur Einträge des Users oder wenn er die Rechte besitzt, alle.
+        Shows only entries which author is the current user.
+        Show all entries if the user has the permission `can_change_foreign`.
         """
         if request.user.has_perm('ticker.can_change_foreign'):
             return self.model._default_manager.get_query_set()
@@ -40,21 +40,15 @@ class EntryAdmin(admin.ModelAdmin):
     def formfield_for_dbfield(self, db_field, **kwargs):
         field = super(EntryAdmin, self).formfield_for_dbfield(db_field, **kwargs)
 
-        # Autorenfeld hat als Vorauswahl den aktuellen User
+        # Autoren die fremde Artikel nicht bearbeiten duerfen,
+        # sehen kein Dropdown Feld
         if db_field.name == "author":
-            field.widget = ForeignKeyAsTextWidget(append_text="Dein Benutzername wird automatisch gespeichert")
+            if not self._request.user.has_perm('ticker.can_change_foreign'):
+                field.widget = ForeignKeyAsTextWidget(append_text=_('Your username gets saved automatically'))
             field.initial = self._request.user.pk
             return field
 
-        # JQuery Autocomplete für Tags
-        if db_field.name == "tags":
-            field.widget = TaggingAutocompleteWidget(
-                taglist=([tag.name for tag in Tag.objects.all()]))
-            return field
-
         if db_field.name == "status":
-            # #FIXME# Das hier geht schöner
-
             # Wenn der User kein "can_publish" recht hat, soll ihm als Auswahl
             # nur "Closed" und "Draft" angezeigt werden.
             if not self._request.user.has_perm('ticker.can_publish'):
@@ -68,20 +62,12 @@ class EntryAdmin(admin.ModelAdmin):
             if hasattr(self, '_obj') and self._obj.status == Entry.STATUS_OPEN:
                 user_choices = Entry.STATUS_CHOICES
 
-            field = forms.ChoiceField(choices=user_choices) # Bugfix: #6967
-            #field.widget = forms.RadioSelect(choices=user_choices)
+            field = forms.ChoiceField(choices=user_choices)
             return field
-
-        # Textarea Felder einwenig größer
-        if isinstance(db_field, models.TextField):
-            field.widget.attrs['style'] = 'height:20em;'
-            return field
-
         return field
 
-    # ``formfield_for_dbfield`` hat keine Zugriff auf das Request-Objekt.
-    # Darum wird es hier global in die Klasse gesetzt. Sehr häßlich. Dann
-    # vielleicht doch mal Threadlocals...
+    # ``formfield_for_dbfield`` has no access to the request, therefore we
+    # put the request here into the global class.
     def change_view(self, request, object_id, *args, **kwargs):
         self._request = request
         self._obj = Entry.objects.get(pk=object_id)
@@ -91,8 +77,13 @@ class EntryAdmin(admin.ModelAdmin):
         self._request = request
         return super(EntryAdmin, self).add_view(request,  *args, **kwargs)
 
-    def save_form(self, request, form, change):
-        instance = form.save(commit=False)
-        return instance
+    def has_change_permission(self, request, obj=None):
+        if not super(EntryAdmin, self).has_change_permission(request, obj):
+            return False
+        
+        if obj is not None and not request.user.has_perm('ticker.can_change_foreign') \
+           and request.user.pk != obj.author.pk:
+            return False
+        return True
 
 admin.site.register(Entry, EntryAdmin)

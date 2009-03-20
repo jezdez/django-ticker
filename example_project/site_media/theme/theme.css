@@ -1,0 +1,70 @@
+body{
+    font-family: Georgia;
+    line-height: 1.5em;
+    background-color: White;
+    color: Black;
+}
+
+h1, h3{
+    font-size: 3em;
+    font-weight: normal;
+    line-height: 1.5em;
+    border-bottom: 1px solid #ccc;
+    width: 80%;
+    margin: 0 auto;
+    text-align: center;
+    min-width: 500px;
+}
+
+h2{
+    font-weight: normal;
+    font-size: 1.8em;
+    margin-bottom: 0.5em;
+    color: Black;
+}
+
+h3{
+    width: auto;
+    font-size: 1.2em;
+}
+
+#outline{
+    width: 50%;
+    min-width: 500px;
+    margin: 0 auto;
+}
+
+div.entry{
+    color: #555;
+    margin: 0 0 4em 0;
+}
+
+#footer{
+    color: #888;
+    font-size: 0.9em;
+    border-top: 1px dashed #ddd;
+    padding: 1em 0;
+}
+
+div.teaser{
+    color: #888;
+    font-size: 0.8em;
+    line-height: 1.7em;
+}
+
+div.comments h4{
+    margin: 1em 0 0 0;
+    color: #333;
+}
+
+div.comments div.body p{
+    margin: 0.5em 0 2em 2em;
+    color: #555;
+}
+
+div.box{
+    border: 1px solid #ccc;
+    margin: 1em 0;
+    font-size: 0.8em;
+    padding: 0 1em;
+}

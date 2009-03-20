@@ -1,6 +1,4 @@
-import datetime
 from django.db import models
-from django.db.models import Q
 from django.db.models import permalink
 from django.contrib.auth.models import User
 from django.utils.translation import ugettext as _
@@ -12,8 +10,9 @@ from django_extensions.db.models import TimeStampedModel
 
 class EntryManager(models.Manager):
     def public(self):
+        """Returns published entries only"""
         return self.filter(status=Entry.STATUS_OPEN)
-
+    
 class Entry(TimeStampedModel):
 
     STATUS_CLOSED = 1
@@ -21,37 +20,30 @@ class Entry(TimeStampedModel):
     STATUS_OPEN = 3
 
     STATUS_CHOICES = (
-        (STATUS_CLOSED, _('Closed')),
-        (STATUS_DRAFT, _('Draft')),
-        (STATUS_OPEN, _('Open')),
+        (STATUS_CLOSED, _('closed')),
+        (STATUS_DRAFT, _('draft')),
+        (STATUS_OPEN, _('published')),
     )
     objects = EntryManager()
 
     # Title and Slug
     title = models.CharField(_('title'), max_length=255)
     slug = AutoSlugField(_('slug'), populate_from='title', max_length=255)
-
     content = models.TextField(_('content'))
     content_more = models.TextField(_('more content'), blank=True)
-    source_url = models.URLField(_('source URL'),blank=True)
-
-    # Status Fields
-    status = models.SmallIntegerField('Status',
-        choices=STATUS_CHOICES, default=STATUS_OPEN)
-
-    # Related
+    status = models.SmallIntegerField('status', choices=STATUS_CHOICES, default=STATUS_OPEN)
     tags = TagField()
     author = models.ForeignKey(User)
-
     enable_comments = models.BooleanField(default=True)
 
     class Meta:
         verbose_name = _('entry')
         verbose_name_plural = _('entries')
         ordering = ('-created',)
+        get_latest_by = 'created'
         permissions = (
-            ('can_change_foreign', _('Can change foreign entry')),
-            ('can_publish', _('Publish instantly')),
+            ('can_change_foreign', _('can change foreign entry')),
+            ('can_publish', _('can publish entry')),
         )
 
     def get_author(self):

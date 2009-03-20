@@ -3,7 +3,7 @@
 {% load i18n %}
 
 {% block content %}
-    <h2>{% trans "Archive" %}</h2>
+    <h2>{% blocktrans %}Archive for <q>{{ the_tag  }}</q>{% endblocktrans %}</h2>
     <ul>
     {% for entry in entry_list %}
     <li>
