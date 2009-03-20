@@ -2,3 +2,60 @@
 django-ticker
 =============
 
+django-ticker is a reusable Django_ application that provides a ticker like
+news section including row level permissions. What does this mean?
+
+In django-ticker you have a fine grained permission control what the
+(administrative) user can do and what not. Besides the default Django
+permissions -- add, change, delete -- there are some extra permissions:
+
+- change_foreign
+- publish
+
+Originally this was created for a news section for the `german Django community`_ 
+where foreign users could add articles but had no permission to publish
+them, cause a moderator must check these articles first. 
+
+It's easy to create a pressroom like workflow, assumed we have different
+people with different permissions:
+
+The Freelance Journalist:
+    Granted permissions: add, change
+    
+    - can add articles
+    - can change his articles (only his own)
+    - can not delete his articles
+    - can set the status of the article to "closed" or "draft". Draft means,
+      that the article is ready for check by a moderator.
+    - in the admin list of articles, he sees only his own
+
+The Journalist:
+    Granted permissions: add, change, delete, publish
+    
+    - can add articles
+    - can change and delete his articles (only his own)
+    - can set the status of the article to "closed", "draft" or "published"
+    - in the admin list of articles, he sees only his own
+
+The Chief Editor (or moderator):
+    Granted permissions: add, change, delete, publish, change_foreign
+    
+    - can add articles
+    - can change and delete all (!) articles
+    - can set the status of the article to "closed", "draft" or "published"
+    - in the admin list of articles, he sees all articles
+    
+The corrector (or lector):
+    Granted permissions: change, change_foreign
+    
+    - Can not add articles
+    - Can not delete articles
+    - Can not publish articles
+    - Can change all articles (e.g. for corrections)
+    - in the admin list of articles, he sees all articles
+    
+So, you can mix these permissions and create a workflow that perfectly 
+fits your needs.
+
+.. _`Django`: http://www.djangoproject.com/
+.. _`german Django Community`: http://django-de.org/
