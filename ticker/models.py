@@ -78,7 +78,7 @@ class EntryResourceType(models.Model):
     title = models.CharField(_('title'), max_length=255)
     slug = AutoSlugField(_('slug'), populate_from='title', max_length=255)
     description = models.TextField(_('description'), blank=True)
-    
+
     def __unicode__(self):
         return self.title
 

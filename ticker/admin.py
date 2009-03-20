@@ -18,16 +18,16 @@ class EntryMetadataInline(admin.StackedInline):
             'fields': (('type', 'title'), 'description', 'url')
         }),
     )
-    
+
 class EntryAdmin(admin.ModelAdmin):
     inlines = [EntryMetadataInline]
-    
+
     list_display = (
         'title',
         'status',
         'author',
     )
-    
+
     fields = (
         'author',
         'status',
@@ -90,7 +90,7 @@ class EntryAdmin(admin.ModelAdmin):
     def has_change_permission(self, request, obj=None):
         if not super(EntryAdmin, self).has_change_permission(request, obj):
             return False
-        
+
         if obj is not None and not request.user.has_perm('ticker.can_change_foreign') \
            and request.user.pk != obj.author.pk:
             return False
