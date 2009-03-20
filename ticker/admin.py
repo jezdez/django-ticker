@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 from django.contrib import admin
 from django.contrib.auth.models import User
 from django import forms
@@ -9,7 +7,7 @@ from django.utils.translation import ugettext as _
 
 from tagging.models import Tag
 from ticker.models import Entry, EntryResource, EntryResourceType
-from ticker.admin.widgets import ForeignKeyAsTextWidget
+from ticker.widgets import ForeignKeyAsTextWidget
 
 class EntryMetadataInline(admin.StackedInline):
     model = EntryResource
