@@ -8,10 +8,20 @@ from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 
 from tagging.models import Tag
-from ticker.models import Entry
+from ticker.models import Entry, EntryResource, EntryResourceType
 from ticker.admin.widgets import ForeignKeyAsTextWidget
 
+class EntryMetadataInline(admin.StackedInline):
+    model = EntryResource
+    fieldsets = (
+        (None, {
+            'fields': (('type', 'title'), 'description', 'url')
+        }),
+    )
+    
 class EntryAdmin(admin.ModelAdmin):
+    inlines = [EntryMetadataInline]
+    
     list_display = (
         'title',
         'status',
@@ -87,3 +97,4 @@ class EntryAdmin(admin.ModelAdmin):
         return True
 
 admin.site.register(Entry, EntryAdmin)
+admin.site.register(EntryResourceType)
