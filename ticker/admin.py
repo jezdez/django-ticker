@@ -1,7 +1,7 @@
-from django.contrib import admin
-from django.contrib.auth.models import User
 from django import forms
 from django.db import models
+from django.contrib import admin
+from django.contrib.auth.models import User
 from django.utils.safestring import mark_safe
 from django.utils.translation import ugettext as _
 
@@ -48,8 +48,8 @@ class EntryAdmin(admin.ModelAdmin):
     def formfield_for_dbfield(self, db_field, **kwargs):
         field = super(EntryAdmin, self).formfield_for_dbfield(db_field, **kwargs)
 
-        # Autoren die fremde Artikel nicht bearbeiten duerfen,
-        # sehen kein Dropdown Feld
+        # authors of who are not allow to edit foreign articles won't see a 
+        # dropdown
         if db_field.name == "author":
             if not self._request.user.has_perm('ticker.can_change_foreign'):
                 field.widget = ForeignKeyAsTextWidget(append_text=_('Your username gets saved automatically'))
@@ -57,16 +57,15 @@ class EntryAdmin(admin.ModelAdmin):
             return field
 
         if db_field.name == "status":
-            # Wenn der User kein "can_publish" recht hat, soll ihm als Auswahl
-            # nur "Closed" und "Draft" angezeigt werden.
+            # if the author has "can_publish" permissions he shall be given
+            # "closed" and "draft" choices
             if not self._request.user.has_perm('ticker.can_publish'):
                 user_choices = ([i for i in Entry.STATUS_CHOICES \
                                  if i[0] != Entry.STATUS_OPEN])
             else:
                 user_choices = Entry.STATUS_CHOICES
 
-            # Außer der Artikel war schon "Live" gesetzt, dann soll es
-            # angezeigt werden.
+            # except the article was set to be "live", then show it
             if hasattr(self, '_obj') and self._obj.status == Entry.STATUS_OPEN:
                 user_choices = Entry.STATUS_CHOICES
 

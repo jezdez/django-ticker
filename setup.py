@@ -2,8 +2,9 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-ticker',
-    version='0.2.0',
+    version='0.2.1',
     description='A simple Django app for newsticker with a row level permission based workflow.',
+    long_description=open('README').read(),
     author='Martin Mahner',
     author_email='martin@mahner.org',
     maintainer='Jannis Leidel',
