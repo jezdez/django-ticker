@@ -1,10 +1,10 @@
-from django.contrib.syndication import feeds
+from django.contrib.syndication.views import Feed
 from django.utils.feedgenerator import Atom1Feed
 from django.utils.translation import ugettext as _
 
 from ticker.models import Entry
 
-class LatestEntries(feeds.Feed):
+class LatestEntries(Feed):
     title = _("Latest news")
     link = "/"
 
