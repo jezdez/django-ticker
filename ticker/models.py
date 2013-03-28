@@ -87,7 +87,7 @@ class EntryResource(models.Model):
     type = models.ForeignKey(EntryResourceType, verbose_name=_('resource type'))
     title = models.CharField(_('title'), max_length=255, blank=True)
     description = models.TextField(_('description'), blank=True)
-    url = models.URLField(_('URL'), blank=True, verify_exists=False)
+    url = models.URLField(_('URL'), blank=True)
 
     class Meta:
         verbose_name = _('resource')
